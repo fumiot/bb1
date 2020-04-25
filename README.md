@@ -1,2 +1,2 @@
-# doc
-Documents about fumiot IoT solutions.
+# BB1
+Resource about FUMIOT base board One.
