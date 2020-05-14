@@ -1,0 +1,42 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "Debug",
+            "type": "cppdbg",
+            "request": "launch",
+            "program": "${workspaceRoot}/out/envmon@esp32devkitc/binary/envmon@esp32devkitc.elf",
+            "args": [],
+            "stopAtEntry": true,
+            "cwd": "${workspaceRoot}",
+            "environment": [],
+            "externalConsole": true,
+            "miDebuggerServerAddress": "localhost:4242",
+            "serverLaunchTimeout": 2000,
+            "targetArchitecture": "ARM",
+            "setupCommands": [
+                {
+                    "text": "cd ${workspaceRoot}"
+                },
+                {
+                    "text": "file out/envmon@esp32devkitc/binary/envmon@esp32devkitc.elf"
+                },
+                {
+                    "text": "target remote localhost:3333"
+                }
+            ],
+            "customLaunchSetupCommands": [],
+            "launchCompleteCommand": "exec-continue",
+            "MIMode": "gdb",
+            "osx": {
+                "miDebuggerPath": "arm-none-eabi-gdb"
+            },
+            "linux": {
+                "miDebuggerPath": "/home/p64/fumiot/AliOS-Things/build/compiler/gcc-xtensa-esp32/Linux64/bin/xtensa-esp32-elf-gdb"
+            },
+            "windows": {
+                "miDebuggerPath": "arm-none-eabi-gdb.exe"
+            }
+        }
+    ]
+}

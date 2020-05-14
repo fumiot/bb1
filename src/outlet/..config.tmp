@@ -1,0 +1,61 @@
+deps_config := \
+	/home/p64/fumiot/AliOS-Things/components/dm/uagent/Config.in \
+	/home/p64/fumiot/AliOS-Things/components/fs/spiffs/Config.in \
+	/home/p64/fumiot/AliOS-Things/components/dm/ota/Config.in \
+	/home/p64/fumiot/AliOS-Things/components/security/linksecurity/ls_osa/Config.in \
+	/home/p64/fumiot/AliOS-Things/components/security/linksecurity/ls_hal/Config.in \
+	/home/p64/fumiot/AliOS-Things/components/security/linksecurity/irot/tee/Config.in \
+	/home/p64/fumiot/AliOS-Things/components/security/linksecurity/irot/se/Config.in \
+	/home/p64/fumiot/AliOS-Things/components/security/linksecurity/irot/km/Config.in \
+	/home/p64/fumiot/AliOS-Things/components/linkkit/dynamic_register/Config.in \
+	/home/p64/fumiot/AliOS-Things/components/linkkit/certs/Config.in \
+	/home/p64/fumiot/AliOS-Things/components/security/linksecurity/itls/Config.in \
+	/home/p64/fumiot/AliOS-Things/components/security/linksecurity/irot/Config.in \
+	/home/p64/fumiot/AliOS-Things/components/security/linksecurity/id2/Config.in \
+	/home/p64/fumiot/AliOS-Things/components/network/http/Config.in \
+	/home/p64/fumiot/AliOS-Things/components/fs/fatfs/Config.in \
+	/home/p64/fumiot/AliOS-Things/components/wireless/bluetooth/ble/host/Config.in \
+	/home/p64/fumiot/AliOS-Things/components/wireless/bluetooth/ble/host/bt_common/Config.in \
+	/home/p64/fumiot/AliOS-Things/components/wireless/bluetooth/ble/breeze/ref-impl/Config.in \
+	/home/p64/fumiot/AliOS-Things/components/wireless/bluetooth/ble/breeze/Config.in \
+	/home/p64/fumiot/AliOS-Things/components/security/linksecurity/alicrypto/Config.in \
+	/home/p64/fumiot/AliOS-Things/components/utility/yloop/Config.in \
+	/home/p64/fumiot/AliOS-Things/components/utility/cjson/Config.in \
+	/home/p64/fumiot/AliOS-Things/components/security/mbedtls/Config.in \
+	/home/p64/fumiot/AliOS-Things/components/network/netmgr/activation/chip_code/Config.in \
+	/home/p64/fumiot/AliOS-Things/components/network/netmgr/activation/Config.in \
+	/home/p64/fumiot/AliOS-Things/components/network/netmgr/Config.in \
+	/home/p64/fumiot/AliOS-Things/components/network/lwip/Config.in \
+	/home/p64/fumiot/AliOS-Things/components/network/Config.in \
+	/home/p64/fumiot/AliOS-Things/components/linkkit/wrappers/Config.in \
+	/home/p64/fumiot/AliOS-Things/components/linkkit/wifi_provision/Config.in \
+	/home/p64/fumiot/AliOS-Things/components/linkkit/mqtt/Config.in \
+	/home/p64/fumiot/AliOS-Things/components/linkkit/iot_coap/Config.in \
+	/home/p64/fumiot/AliOS-Things/components/linkkit/infra/Config.in \
+	/home/p64/fumiot/AliOS-Things/components/linkkit/dev_sign/Config.in \
+	/home/p64/fumiot/AliOS-Things/components/linkkit/dev_model/Config.in \
+	/home/p64/fumiot/AliOS-Things/components/dm/und/Config.in \
+	/home/p64/fumiot/AliOS-Things/components/dm/ulog/Config.in \
+	/home/p64/fumiot/AliOS-Things/core/vfs/Config.in \
+	/home/p64/fumiot/AliOS-Things/core/rhino/Config.in \
+	/home/p64/fumiot/AliOS-Things/core/rbtree/Config.in \
+	/home/p64/fumiot/AliOS-Things/core/osal/aos/Config.in \
+	/home/p64/fumiot/AliOS-Things/core/kv/Config.in \
+	/home/p64/fumiot/AliOS-Things/core/init/Config.in \
+	/home/p64/fumiot/AliOS-Things/core/cli/Config.in \
+	/home/p64/fumiot/AliOS-Things/platform/mcu/esp32/Config.in \
+	/home/p64/fumiot/bb1/src/outlet/board/esp32devkitc/Config.in \
+	/home/p64/fumiot/AliOS-Things/platform/arch/xtensa/lx6/Config.in \
+	/home/p64/fumiot/bb1/src/outlet/Config.in
+
+/home/p64/fumiot/bb1/src/outlet/out/config/auto.conf: \
+	$(deps_config)
+
+ifneq "$(APPDIR)" "/home/p64/fumiot/bb1/src/outlet"
+/home/p64/fumiot/bb1/src/outlet/out/config/auto.conf: FORCE
+endif
+ifneq "$(AOS_SDK_PATH)" "/home/p64/fumiot/AliOS-Things"
+/home/p64/fumiot/bb1/src/outlet/out/config/auto.conf: FORCE
+endif
+
+$(deps_config): ;

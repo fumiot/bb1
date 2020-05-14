@@ -1,0 +1,202 @@
+    /* Sensor Hal start */
+    ret = sensor_hal_init();
+    if (ret != 0) {
+        return ret;
+    }
+
+
+    /* Open the temperature sensor device */
+    ret = sensor_hal_open(TAG_DEV_TEMP, 0);
+    if (ret != 0) {
+        printf("temp open failed.\n");
+        return ret;
+    }
+
+    aos_msleep(500);
+    ret = sensor_hal_open(TAG_DEV_HUMI, 0);
+    if (ret != 0) {
+        printf("humi open failed.\n");
+        return ret;
+    }
+    aos_msleep(500);
+
+    /* Set the sampling period for sensors */
+    (void)sensor_hal_ioctl(TAG_DEV_TEMP, 0, SENSOR_IOCTL_ODR_SET, SENSOR_SAMPLE_TIME);
+    (void)sensor_hal_ioctl(TAG_DEV_HUMI, 0, SENSOR_IOCTL_ODR_SET, SENSOR_SAMPLE_TIME);
+
+    /* Enter loop run to handle linkkit event */
+    while (1) {
+
+        /* Read the temperature sensor data */
+        ret = sensor_hal_read(TAG_DEV_TEMP, 0, &temp, sizeof(temp));
+        if (ret > 0) {
+            /* Print the temperature sensor data */
+            printf("\nTemperature value : %.1f centidegree\n", ((float)temp.t)/10);
+
+            memset(param, 0, 128);
+
+            /* build the report payload */
+            sprintf(param, PROP_POST_FORMAT_TEMP, ((float)(temp.t))/10);
+	    printf("\n param len %d\n",strlen(param)+1);
+
+            /* Report the temperature data to cloud */
+            if (cnt % 16 == 0) {
+                ret = IOT_Linkkit_Report(g_user_example_ctx.master_devid, ITM_MSG_POST_PROPERTY, (unsigned char *)param, strlen(param) + 1);
+                if (ret == -1) {
+                    EXAMPLE_TRACE("%s %d fail\n", __func__,__LINE__);
+                }
+            }
+        }
+
+        aos_msleep(3000);
+        ret = sensor_hal_read(TAG_DEV_HUMI, 0, &humi, sizeof(humi));
+        if (ret > 0) {
+            /* Print the humidity sensor data */
+            printf("\nHumidity value : %d\% Rh\n", humi.h/10);
+
+            memset(param, 0, 128);
+
+            /* build the report payload */
+            sprintf(param, PROP_POST_FORMAT_HUMI, humi.h/10);
+	    printf("\n param len %d\n",strlen(param)+1);
+            /* Report the humidity data to cloud */
+            if (cnt % 16 == 0) {
+                ret = IOT_Linkkit_Report(g_user_example_ctx.master_devid, ITM_MSG_POST_PROPERTY, (unsigned char *)param, strlen(param) + 1);
+                if (ret == -1) {
+                    EXAMPLE_TRACE("%s %d fail\n", __func__,__LINE__);
+                }
+            }
+        }
+
+
+
+
+    hal_i2c_master_recv(&sensor_i2c_master,
+                                          slaveAddr,
+                                          pageBuffer,
+                                          6,
+                                           AOS_WAIT_FOREVER); 
+
+//    char i;
+//    for(i=0;i<6;i++) printf(" %x ",pageBuffer[i]);
+//    printf("\n");
+    union {
+        uint32_t i;
+        unsigned char b[4];
+    } Icov;
+
+//    double divt= 1.0/(1<<20);
+//    printf("divt = %f\n"  ,divt);
+    Icov.i = 0;
+    
+    Icov.b[0] = pageBuffer[3];
+    Icov.b[1] = pageBuffer[2];
+    Icov.b[2] = pageBuffer[1];
+//    printf("covi = %x\n"  ,Icov.i);
+    Icov.i >>=4;
+//    printf("covi>>4 = %x\n"  ,Icov.i);
+  
+    double Humi2  = (Icov.i*1.0)*(1<<20)*100.0;
+
+    Icov.i = 0;
+    Icov.b[0] = pageBuffer[5];
+    Icov.b[1] = pageBuffer[4];
+    Icov.b[2] = pageBuffer[3]&0x0F;
+
+    double Tc2 = (Icov.i*1.0)/(1<<20) *200 -50;
+    printf("Temp2 = %f,  Humi2 = %f\n",Tc2,Humi2);
+    aos_msleep(1000);
+
+
+
+
+
+char aht10caliFlag = 0;
+void updateSHT30(void)
+{
+    unsigned char slaveAddr = 0x44<<1;
+   /*  pageBuffer[0]=0x24;
+    pageBuffer[1] = 0x0B;
+    hal_i2c_master_send(&sensor_i2c_master,
+                                          slaveAddr,
+                                          pageBuffer,
+                                          2,
+                                          AOS_WAIT_FOREVER);
+    aos_msleep(1000);
+    hal_i2c_master_recv(&sensor_i2c_master,
+                                          slaveAddr,
+                                          pageBuffer,
+                                          6,
+                                          AOS_WAIT_FOREVER); 
+  
+    Tc = -45.0 + 175*(pageBuffer[0]*0x100+pageBuffer[1])/65535.0;
+    Humi = 100* (pageBuffer[3]*0x100+pageBuffer[4])/65535.0;
+    aos_msleep(1000);
+
+    printf("Temp = %f,  Humi = %f\n",Tc,Humi);*/
+ 
+    slaveAddr = 0x39<<1;
+    if(!aht10caliFlag)
+    {
+    
+    pageBuffer[0]=0xE1;
+    pageBuffer[1] = 0x08;
+    pageBuffer[2] = 0x0;
+    hal_i2c_master_send(&sensor_i2c_master,
+                                          slaveAddr,
+                                          pageBuffer,
+                                          3,
+                                          AOS_WAIT_FOREVER);
+    aht10caliFlag = 1;
+    aos_msleep(1000);
+    }
+    pageBuffer[0]=0xAC;
+    pageBuffer[1] = 0x33;
+    pageBuffer[2] = 0x0;
+    hal_i2c_master_send(&sensor_i2c_master,
+                                          slaveAddr,
+                                          pageBuffer,
+                                          3,
+                                          AOS_WAIT_FOREVER);
+    aos_msleep(1000);
+
+
+    hal_i2c_master_recv(&sensor_i2c_master,
+                                          slaveAddr,
+                                          pageBuffer,
+                                          6,
+                                           AOS_WAIT_FOREVER); 
+
+    char i;
+    for(i=0;i<6;i++) printf(" %x ",pageBuffer[i]);
+    printf("\n");
+    union {
+        uint32_t i;
+        unsigned char b[4];
+    } Icov;
+
+//    double divt= 1.0/(1<<20);
+//    printf("divt = %f\n"  ,divt);
+    Icov.i = 0;
+    
+    Icov.b[0] = pageBuffer[3];
+    Icov.b[1] = pageBuffer[2];
+    Icov.b[2] = pageBuffer[1];
+//    printf("covi = %x\n"  ,Icov.i);
+//    printf("covi>>4 = %x\n"  ,Icov.i>>4);
+  
+    Icov.i >>=4;
+    Humi  = (Icov.i*1.0)/(1<<20)*100.0;
+
+    Icov.i = 0;
+    Icov.b[0] = pageBuffer[5];
+    Icov.b[1] = pageBuffer[4];
+    Icov.b[2] = pageBuffer[3]&0x0F;
+
+    Tc = (Icov.i*1.0)/(1<<20) *200 -50;
+    printf("Temp2 = %f,  Humi2 = %f\n",Tc,Humi);
+    
+    aos_msleep(2000);
+
+       
+}
