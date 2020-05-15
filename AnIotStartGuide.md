@@ -133,6 +133,7 @@ linkkit_example_solo.c的中，找到如下的四行处，将这四行的内容�
 ```
 
 编译：
+
 ```
 $ aos make
 ```
@@ -224,15 +225,19 @@ linkkit_example_solo.c的中，找到如下的四行处，将这四行的内容�
 #define PRODUCT_SECRET   "ThNbP5iNUQ1lQe2Q"
 #define DEVICE_NAME      "alen-activate-test"
 #define DEVICE_SECRET    "jcumDL5AJRgU7zRNcCcnHRiQmtii0vDn"
+```
 
 编译：
+
 ```
 $ aos make
 ```
 用手机数据线连接esp32，烧录固件：
+
 ```
 aos upload
 ```
+
 有些电脑需要手工按着板子上的IO0按键才能顺利进入烧录模式完成烧录。
 用minicom打开一个串口终端，串口设置为115200 8N1，可以看见板子串口上输出的Log信息。
 
