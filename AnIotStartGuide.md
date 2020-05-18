@@ -79,12 +79,31 @@ aliyun，可免费部署50个测试节点。
 
 Jlink仿真器步骤可选，需要打断点单步调试要用到相关设置。
 
-## 本机编译验证
-验证：hello world@linuxhost
-## 面向esp32核心板编译、烧写验证：
-hello world@esp32devkitc
+# 下载源码
 
+*建立目录*
+打开命令行终端，此时应该在用户的($HOME)目录下，输入
 
+```
+mkdir fumiot
+cd fumiot
+git clone https://github.com/fumiot/AliOS-Things
+git clone https://github.com/fumiot/bb1
+```
+
+代码克隆完成后，编辑bashrc文件建立环境变量。
+
+```
+gedit ~/.bashrc
+```
+
+在打开的bashrc文件中，最后一行添加：
+export AOS_SDK_PATH=～/fumiot/AliOS-things 
+         
+保存关闭后运行：
+```
+source ~/.bashrc
+```
 # 注册云端资源
 去阿里云的[生活物联网平台](https://living.aliyun.com/home)，点击开放平台入口，登录或者免费注册帐号。可以使用淘宝帐号，实名认证后就能开通物联网服务，创建项目和产品，在这里创建的产品，可以用的手机公版云智能app控制。
 如下图：
